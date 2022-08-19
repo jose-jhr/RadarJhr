@@ -233,6 +233,11 @@ float distance(int trigger, int echo){
 
 ```
 
+CONEXIÓN ARDUINO MUDULO BLUETOOTH.
+![image](https://user-images.githubusercontent.com/66834393/185570783-ee232df7-d3a7-4057-979d-a75017b46354.png)
+
+
+
 7) recibo los datos provenientes de arduino, en este caso especial use 3 sensores, como se ve a continuación.
 
 ![image](https://user-images.githubusercontent.com/66834393/185570245-0fc114a7-ed7b-4932-b289-39d5efc7f052.png)
