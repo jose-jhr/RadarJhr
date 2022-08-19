@@ -11,6 +11,10 @@ una vez ya tengas implementada la configuracion de la libreria bluetooth que nos
 
 POSDATA, SI USAS JAVA TIENES QUE IMPLEMENTAR KOTLIN DEBIDO A QUE LA LIBRERIA USA KOTLIN, SIMPLEMENTE IMPORTAS KOTLIN Y DEBERIA FUNCIONAR ;)
 
+
+![image](https://user-images.githubusercontent.com/66834393/185570326-4a079501-8e54-43ff-9bb5-27eb23f98854.png)
+
+
 1) importamos la libreria RadarJhr
 
  ```
@@ -96,7 +100,7 @@ si pegas este codigo solo veras una listview, y es por que sera la primera vista
 
 ![image](https://user-images.githubusercontent.com/66834393/185566347-1a622898-01f9-4e3e-bb50-319b566ffebc.png)
 
-3) inicializamos las opciones que esta vista contiene tales, como colores, tamaño de letra, tamaño de los puntos capturados por el radar, etc.
+3) inicializamos las opciones que esta vista contiene tales como colores, tamaño de letra, tamaño de los puntos capturados por el radar, etc.
 
  ```kotlin
  //maxima distancia que lograra capturar el sensor dentro de la vista en Centimetros
@@ -226,6 +230,174 @@ float distance(int trigger, int echo){
   return d;
 }
 
+
+```
+
+7) recibo los datos provenientes de arduino, en este caso especial use 3 sensores, como se ve a continuación.
+
+![image](https://user-images.githubusercontent.com/66834393/185570245-0fc114a7-ed7b-4932-b289-39d5efc7f052.png)
+
+A continuacion muestro el codigo completo en kotlin, el codigo xml es el mismo del paso 2.
+
+Gracias por ver este tutorial, agradeceria mucho que te suscribas a mi canal INGENIERIA JHR https://www.youtube.com/ingenieriajhr gracias.
+
+```kotlin
+
+import android.content.Intent
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import com.ingenieriajhr.blujhr.BluJhr
+import kotlinx.android.synthetic.main.activity_main.*
+
+
+class MainActivity : AppCompatActivity() {
+
+        lateinit var blue: BluJhr
+        var permisosOnBluetooth = false
+        var requiredPermissions = listOf<String>()
+        var devicesBluetooth = ArrayList<String>()
+
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
+
+            blue = BluJhr(this)
+            blue.onBluetooth()
+            //maxima distancia que lograra capturar el sensor dentro de la vista en Centimetros
+            radar.maxDistancia(400f)
+            //velocidad animacion del radar
+            radar.velAnimacion(30)
+            //tamaño de las letras que se tienen en los puntos
+            radar.tamLetras(20f)
+            //tamaño de los puntos capturados
+            radar.radioObj(0.05f)
+            //color de los puntos que indica el radar
+            radar.colorCircle(255, 255, 255)
+            //color de las lineas del radar
+            radar.colorRadar(0, 255, 0)
+            //color de la animacion de las lineas del radar
+            radar.colorLinea(0, 255, 0)
+            //true para que aparezcan los puntos en el radar
+            radar.obj1Visible(true)
+            //animacion del radar se muestra y desaparece a medida que se aumenta el valor de alpha
+            radar.maxAnimationAlpha = 0
+            //iniciamos la animacion del radar, si no se inicia ni los puntos ni la animacion iniciara
+            radar.initAnimation(true)
+
+            listDeviceBluetooth.setOnItemClickListener { adapterView, view, i, l ->
+                if (devicesBluetooth.isNotEmpty()) {
+                    blue.connect(devicesBluetooth[i])
+                    blue.setDataLoadFinishedListener(object : BluJhr.ConnectedBluetooth {
+                        override fun onConnectState(state: BluJhr.Connected) {
+                            when (state) {
+                                BluJhr.Connected.True -> {
+                                    Toast.makeText(applicationContext, "True", Toast.LENGTH_SHORT)
+                                        .show()
+                                    listDeviceBluetooth.visibility = View.GONE
+                                    viewConn.visibility = View.VISIBLE
+                                    rxReceived()
+                                }
+
+                                BluJhr.Connected.Pending -> {
+                                    Toast.makeText(applicationContext, "Pending", Toast.LENGTH_SHORT)
+                                        .show()
+
+                                }
+
+                                BluJhr.Connected.False -> {
+                                    Toast.makeText(applicationContext, "False", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+
+                                BluJhr.Connected.Disconnect -> {
+                                    Toast.makeText(applicationContext, "Disconnect", Toast.LENGTH_SHORT)
+                                        .show()
+                                    listDeviceBluetooth.visibility = View.VISIBLE
+                                    viewConn.visibility = View.GONE
+                                }
+
+                            }
+                        }
+                    })
+
+                }
+            }
+
+            btnRx.setOnClickListener {
+                blue.bluTx("e")
+                radar.resetPoints()
+                txtConsola.text = ""
+            }
+        }
+
+    private fun rxReceived() {
+        blue.loadDateRx(object:BluJhr.ReceivedData{
+            override fun rxDate(rx: String) {
+                println("------------------------$rx---------------------")
+                //convierto el string de llegada en un array.
+                val date = rx.split(",")
+                //ya que envio los datos en orden primero envio 45 luego 90 y luego 135
+                var angle = 45
+                //recorro el array
+                for(i in date){
+                    //le envio los datos a la vista, atributos, angulo y distancia
+                    radar.detecto(angle,i.toFloat())
+                    //adiciono en un textView con el fin de visualizar los datos que no se grafiquen.
+                    txtConsola.text = txtConsola.text.toString()+" Angulo: $angle,  Distancia: ${i}\n"
+                    //sumo el angulo para el proximo dato
+                    angle+=45
+
+                }
+            }
+        })
+    }
+
+
+
+        /**
+         * pedimos los permisos correspondientes, para android 12 hay que pedir los siguientes BLUETOOTH_SCAN y BLUETOOTH_CONNECT
+         * en android 12 o superior se requieren permisos adicionales
+         */
+        override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+            if (blue.checkPermissions(requestCode,grantResults)){
+                Toast.makeText(this, "Exit", Toast.LENGTH_SHORT).show()
+                blue.initializeBluetooth()
+            }else{
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S){
+                    blue.initializeBluetooth()
+                }else{
+                    Toast.makeText(this, "Algo salio mal", Toast.LENGTH_SHORT).show()
+                }
+            }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+
+
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            if (!blue.stateBluetoooth() && requestCode == 100){
+                blue.initializeBluetooth()
+            }else{
+                if (requestCode == 100){
+                    devicesBluetooth = blue.deviceBluetooth()
+                    if (devicesBluetooth.isNotEmpty()){
+                        val adapter = ArrayAdapter(this,android.R.layout.simple_expandable_list_item_1,devicesBluetooth)
+                        listDeviceBluetooth.adapter = adapter
+                    }else{
+                        Toast.makeText(this, "No tienes vinculados dispositivos", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+            }
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+
+}
 
 ```
 
