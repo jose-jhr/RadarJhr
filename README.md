@@ -3,6 +3,8 @@
 En este tutorial te enseñare como implementar un radar con 3 sensores de ultrasonido usando arduino y android studio.
 para ello primero debemos importar nuestra libreria de bluetooth que ya vimos anteriormente en nuestro video de youtube a continuacion te anexo el enlace del codigo y el video de youtube, 
 
+
+
 enlace github code https://github.com/jose-jhr/blueJhrLibrary
 enlace video de youtube https://www.youtube.com/watch?v=ubrTw9pXkXM&t=8s
 
@@ -14,6 +16,9 @@ POSDATA, SI USAS JAVA TIENES QUE IMPLEMENTAR KOTLIN DEBIDO A QUE LA LIBRERIA USA
 
 ![image](https://user-images.githubusercontent.com/66834393/185570326-4a079501-8e54-43ff-9bb5-27eb23f98854.png)
 
+ ```
+id 'kotlin-android-extensions'
+ ```
 
 1) importamos la libreria RadarJhr
 
