@@ -34,6 +34,7 @@ id 'kotlin-android-extensions'
   ```
   	dependencies {
 	        implementation 'com.github.jose-jhr:RadarJhr:1.0.1'
+		    implementation 'com.github.jose-jhr:blueJhrLibrary:0.1.0'
 	}
  ```
  
