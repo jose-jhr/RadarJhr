@@ -13,6 +13,10 @@ una vez ya tengas implementada la configuracion de la libreria bluetooth que nos
 
 POSDATA, SI USAS JAVA TIENES QUE IMPLEMENTAR KOTLIN DEBIDO A QUE LA LIBRERIA USA KOTLIN, SIMPLEMENTE IMPORTAS KOTLIN Y DEBERIA FUNCIONAR ;)
 
+link del video explicativo.
+https://youtu.be/7joviLPG7eE
+
+![arduinoSensores](https://user-images.githubusercontent.com/66834393/188247732-60586a49-c671-4ac9-878c-1418eb30adc5.png)
 
 ![image](https://user-images.githubusercontent.com/66834393/185570326-4a079501-8e54-43ff-9bb5-27eb23f98854.png)
 
@@ -249,7 +253,8 @@ CONEXIÓN ARDUINO MUDULO BLUETOOTH.
 
 7) recibo los datos provenientes de arduino, en este caso especial use 3 sensores, como se ve a continuación.
 
-![image](https://user-images.githubusercontent.com/66834393/185570245-0fc114a7-ed7b-4932-b289-39d5efc7f052.png)
+![bluetooth](https://user-images.githubusercontent.com/66834393/188247722-4c248611-9b94-4d19-9523-24a624d77632.png)
+
 
 A continuacion muestro el codigo completo en kotlin, el codigo xml es el mismo del paso 2.
 
