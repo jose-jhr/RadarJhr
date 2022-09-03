@@ -16,7 +16,7 @@ POSDATA, SI USAS JAVA TIENES QUE IMPLEMENTAR KOTLIN DEBIDO A QUE LA LIBRERIA USA
 link del video explicativo.
 https://youtu.be/7joviLPG7eE
 
-![arduinoSensores](https://user-images.githubusercontent.com/66834393/188247732-60586a49-c671-4ac9-878c-1418eb30adc5.png)
+![subiyoutube](https://user-images.githubusercontent.com/66834393/188247760-43910b7a-7ad1-49f2-ab20-05b0b0ab3ab5.jpg)
 
 ![image](https://user-images.githubusercontent.com/66834393/185570326-4a079501-8e54-43ff-9bb5-27eb23f98854.png)
 
